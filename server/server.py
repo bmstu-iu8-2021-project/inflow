@@ -10,6 +10,7 @@ ENV = {
     "PG_PASS": "qwerty123",
     "PG_DB":"inflow",
     "PG_PORT":"5432",
+    "qwerty": "12345"
 }
 
 
