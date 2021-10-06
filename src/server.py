@@ -26,6 +26,15 @@ class Server:
         self.app.add_url_rule('/', view_func=self.get_home)
         self.app.add_url_rule('/home', view_func=self.get_home)
         self.app.add_url_rule('/tags/all', view_func=self.tags_all, methods=['GET'])
+        self.app.add_url_rule('/tags/add',)
+        self.app.add_url_rule('/tags/edit',)
+        self.app.add_url_rule('/tags/delete',)
+        self.app.add_url_rule('/tags/search',)
+        self.app.add_url_rule('/tags/join',)
+        self.app.add_url_rule('/article/add',)
+        self.app.add_url_rule('/article/edit',)
+        self.app.add_url_rule('/article/delete',)
+        self.app.add_url_rule('/article/search',)
 
     def run(self):
         self.server = threading.Thread(target=self.app.run, kwargs={'host': self.host, 'port': self.port})
