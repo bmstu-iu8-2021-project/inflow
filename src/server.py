@@ -1,11 +1,9 @@
 #!/usr/bin/python3
 
-import psycopg2
-import sys
 import threading
+import os
 
 from flask import Flask
-from flask.views import View
 
 app = Flask(__name__)
 
@@ -23,7 +21,7 @@ class Server:
         # andpoint для выключения приложения
         # в view_func= передаем параметр, который будет выполнять функцию shutdown
 
-        self.tag_service = services.TagService(SERVER_CONFIG["DB_VARS"])
+        self.tag_service = services.TagService(SERVER_CONFIG["PG_VARS"])
         
         self.app.add_url_rule('/', view_func=self.get_home)
         self.app.add_url_rule('/home', view_func=self.get_home)
@@ -43,17 +41,19 @@ class Server:
             
 
 SERVER_CONFIG = {
-    "DB_VARS": {
-        "PG_USER": "inflow-client",
-        "PG_PASS": "QwerTY",
-        "PG_DB": "inflow",
-        "PG_PORT":"5432",
-        "PG_HOST": "localhost",
+    "PG_VARS": {
+        "PG_USER": os.environ.get("PG_USER"),
+        "PG_PASS": os.environ.get("PG_PASS"),
+        "PG_DB":   os.environ.get("PG_DB"),
+        "PG_PORT": os.environ.get("PG_PORT"),
+        "PG_HOST": os.environ.get("PG_HOST"),
     }
 }
 
 if __name__ == "__main__":
+    address = os.environ.get("PROD_ADDR")
+    if not address:
+        address = "127.0.0.1"
 
-    
-    server = Server("127.0.0.1", "3000", SERVER_CONFIG)
+    server = Server(address, "3000", SERVER_CONFIG)
     server.run()

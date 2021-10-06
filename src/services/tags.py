@@ -19,8 +19,10 @@ class TagService:
 
     def __init__(self, db_vars):
         self.connection = psycopg2.connect(
-            host=db_vars["PG_HOST"], user=db_vars["PG_USER"],
-            password=db_vars["PG_PASS"], port=db_vars["PG_PORT"],
+            host=db_vars["PG_HOST"],
+            port=db_vars["PG_PORT"],
+            user=db_vars["PG_USER"],
+            password=db_vars["PG_PASS"],
             database=db_vars["PG_DB"]
         )
 
@@ -32,16 +34,3 @@ class TagService:
         return [Tag(*row) for row in cursor.fetchall()]
  
 
-
-
-if __name__ == "__main__":
-    ENV = {
-        "PG_USER": "inflow-client",
-        "PG_PASS": "QwerTY",
-        "PG_DB": "inflow",
-        "PG_PORT":"5432",
-    }
-
-    tag_service = TagService(ENV)
-    tags = tag_service.all()
-    print(tags)
