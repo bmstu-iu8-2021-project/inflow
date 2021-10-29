@@ -33,33 +33,35 @@ class TagService:
 
         return [Tag(*row) for row in cursor.fetchall()]
 
-    def add(self, label, color):
-        self.label = label
-        self.color = color
+    def create(self, label, color):
         cursor = self.connection.cursor()
 
-        cursor.execute("INSERT INTO tags(label, color) VALUES (%s, %s)", (label, color))
+        cursor.execute("INSERT INTO tags(label, color) VALUES (%s, %s) RETURNING id;", (label, color))
+        id = cursor.fetchone()[0]
+        return Tag(id, label, color)
         
-    def edit(self):
-        cursor = self.connection.cursor()
-        cursor.execute("UPDATE tags SET label = %s, colour = %s WHERE label = %s",())
+        
+    # def update(self, id, edit_params):
+    #     cursor = self.connection.cursor()
+    #     cursor.execute("UPDATE tags SET label = %s, color = %s WHERE id = %s",())
 
-    def delete(self):
+    def delete(self, id):
         cursor = self.connection.cursor()
-        cursor.execute("DELETE * FROM tags WHERE label = %s",())
-        cursor.execute("DELETE * FROM tags_resources WHERE tag_id = %s",())
+        cursor.execute("DELETE id, label, color FROM tags WHERE id = %s",(id))
+        cursor.execute("DELETE resources_id, tag_id FROM tags_resources WHERE tag_id = %s",(id))
 
-    def search(self):
+    def search(self, label):
         cursor = self.connection.cursor()
-        cursor.execute("SELECT * FROM tags WHERE label LIKE '%(%s)%'",())
+        cursor.execute("SELECT id, label, color FROM tags WHERE label LIKE '%(%s)%'",(label))
 
         return [Tag(*row) for row in cursor.fetchall()]
 
-    def join(self):
+    def join(self, id_src, id_dst):
         cursor = self.connection.cursor()
-        cursor.execute("UPDATE tags_resources SET tag_id = %s WHERE tag_id = %s and tag_id = %s",())
-        cursor.execute("UPDATE tags SET label = %s WHERE label = %s",()) #меняем один из тегов новый
-        cursor.execute("DELETE * FROM tags WHERE label = %s",()) #другой тег удаляем
+        cursor.execute("UPDATE tags_resources SET tag_id = %s WHERE tag_id = %s",(id_dst, id_src))
+        cursor.execute("DELETE id, label, color FROM tags WHERE id = %s",(id_src)) #другой тег удаляем
+
+    
 
 
     
@@ -67,22 +69,22 @@ class TagService:
 class CreateTable:
         def __init__(self, db_vars):
             
-        self.connection = psycopg2.connect(
-            host=db_vars["PG_HOST"], user=db_vars["PG_USER"],
-            password=db_vars["PG_PASS"], port=db_vars["PG_PORT"],
-            database=db_vars["PG_DB"]
-        )
+            self.connection = psycopg2.connect(
+                host=db_vars["PG_HOST"], user=db_vars["PG_USER"],
+                password=db_vars["PG_PASS"], port=db_vars["PG_PORT"],
+                database=db_vars["PG_DB"]
+            )
 
         def table_for_tags(self):
             cursor = self.connection.cursor()
 
-            cursor.execute("CREATE TABLE IF NOT EXISTS tags (Id SERIAL PRIMARY KEY, Label CHARACTER VARYING(30), colour CHARACTER VARYING(30) );")
+            cursor.execute("CREATE TABLE IF NOT EXISTS tags (id SERIAL PRIMARY KEY, label CHARACTER VARYING(30), color CHARACTER VARYING(30) );")
 
 
         def table_for_resources(self):
             cursor = self.connection.cursor()
 
-            cursor.execute("CREATE TABLE IF NOT EXISTS resources (Id SERIAL PRIMARY KEY, Label CHARACTER VARYING(70), Link CHARACTER VARYING(70));")
+            cursor.execute("CREATE TABLE IF NOT EXISTS resources (id SERIAL PRIMARY KEY, label CHARACTER VARYING(70), link TEXT);")
 
         def table_for_tags_resources(self):
             cursor = self.connection.cursor()

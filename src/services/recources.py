@@ -1,3 +1,19 @@
+import psycopg2
+
+class Resources:
+
+    def __init__(self, id, label, link):
+        self.id = id
+        self.label = label
+        self.link = link
+
+
+    def __str__(self):
+        return "resource[{}]({}, {})".format(self.id, self.label, self.link)
+
+    def __repr__(self):
+        return str(self)
+
 class ResourceService:
     def __init__(self, db_vars):
         self.connection = psycopg2.connect(
@@ -6,38 +22,40 @@ class ResourceService:
             database=db_vars["PG_DB"]
         )
 
-    def search_from_tags(self):
+    def search_by_tag(self, id, *args):
         cursor = self.connection.cursor()
-        cursor.execute("SELECT * FROM resources WHERE tags_resources.resources_id",()) ???
+        str = 'tags_resources.tag_id = ' + id + ' '
+        for i in args:
+            str += 'AND tags_resources.tag_id = ' + i + ' '
 
-        return [Tag(*row) for row in cursor.fetchall()]
+        cursor.execute("SELECT resources.id, resources.label, resources.link FROM resources JOIN tags_resources WHERE %s",(str))
 
-    def search_from_label(self):
+        return [Resources(*row) for row in cursor.fetchall()]
+
+    def search_by_label(self, label):
         cursor = self.connection.cursor()
-        cursor.execute("SELECT * FROM resources WHERE label LIKE '%(%s)%'",())
+        cursor.execute("SELECT id, label, link FROM resources WHERE label LIKE '%(%s)%'",(label))
 
         return [Resource(*row) for row in cursor.fetchall()]
 
-    def delete(self):
+    def delete(self, id):
         cursor = self.connection.cursor()
-        cursor.execute("DELETE * FROM resources WHERE label = %s",())
-        cursor.execute("DELETE * FROM tags_resources WHERE resources_id = %s",())
+        cursor.execute("DELETE id, label, link FROM resources WHERE id = %s",(id))
+        cursor.execute("DELETE id, label, link FROM tags_resources WHERE resources_id = %s",(id))
 
-    def add(self, label, link):
-        self.label = label
-        self.link = link
+    def create(self, label, link):
         cursor = self.connection.cursor()
 
         cursor.execute("INSERT INTO resources(label, link) VALUES (%s, %s)", (label, link))
 
-    def edit_add_tags(self):
+    def update_add_tags(self, tag_id, resources_id):
         cursor = self.connection.cursor()
-        cursor.execute("INSERT INTO tags_resources(tag_id, resources_id) VALUES (%s, %s),())
+        cursor.execute("INSERT INTO tags_resources(tag_id, resources_id) VALUES (%s, %s)",(tag_id, resources_id))
 
-    def edit_delete_tags(self):
+    def update_delete_tags(self, tag_id):
         cursor = self.connection.cursor()
-        cursor.execute("DELETE * FROM tags_resources WHERE tag_id = %s",())
+        cursor.execute("DELETE resources_id, tag_id FROM tags_resources WHERE tag_id = %s",(tag_id))
 
-    def edit(self):
-        cursor = self.connection.cursor()
-        cursor.execute("UPDATE resources SET label = %s, link = %s WHERE id = %s",())
+    # def update(self):
+    #     cursor = self.connection.cursor()
+    #     cursor.execute("UPDATE resources SET label = %s, link = %s WHERE id = %s",())
