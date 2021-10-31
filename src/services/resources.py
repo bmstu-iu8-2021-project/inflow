@@ -38,12 +38,12 @@ class ResourceService:
 
         return [Resource(*row) for row in cursor.fetchall()]
 
-    def delete(self, id):
+    def art_delete(self, id):
         cursor = self.connection.cursor()
         cursor.execute("DELETE id, label, link FROM resources WHERE id = %s",(id))
         cursor.execute("DELETE id, label, link FROM tags_resources WHERE resources_id = %s",(id))
 
-    def create(self, label, link):
+    def art_create(self, label, link):
         cursor = self.connection.cursor()
 
         cursor.execute("INSERT INTO resources(label, link) VALUES (%s, %s)", (label, link))

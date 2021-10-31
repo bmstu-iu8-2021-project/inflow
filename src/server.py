@@ -22,19 +22,21 @@ class Server:
         # в view_func= передаем параметр, который будет выполнять функцию shutdown
 
         self.tag_service = services.TagService(SERVER_CONFIG["PG_VARS"])
+        self.resource_service = services.ResourceService(SERVER_CONFIG["PG_VARS"])
         
         self.app.add_url_rule('/', view_func=self.get_home)
         self.app.add_url_rule('/home', view_func=self.get_home)
-        self.app.add_url_rule('/tags/all', view_func=self.tags_all, methods=['GET'])
-        # self.app.add_url_rule('/tags/add',)
-        # self.app.add_url_rule('/tags/edit',)
-        # self.app.add_url_rule('/tags/delete',)
-        # self.app.add_url_rule('/tags/search',)
-        # self.app.add_url_rule('/tags/join',)
-        # self.app.add_url_rule('/article/add',)
-        # self.app.add_url_rule('/article/edit',)
-        # self.app.add_url_rule('/article/delete',)
-        # self.app.add_url_rule('/article/search',)
+        self.app.add_url_rule('/tags/all', view_func=self.tag_service.all, methods=['GET'])
+        self.app.add_url_rule('/tags/create', view_func=self.tag_service.create, methods=['POST'])
+        self.app.add_url_rule('/tags/delete', view_func=self.tag_service.delete, methods=['DELETE'])
+        self.app.add_url_rule('/tags/search', view_func=self.tag_service.search, methods=['GET'])
+        self.app.add_url_rule('/tags/join', view_func=self.tag_service.join, methods=['PUT'])
+        self.app.add_url_rule('/article/search_by_tag', view_func=self.resource_service.search_by_tag, methods=['GET'])
+        self.app.add_url_rule('/article/search_by_label', view_func=self.resource_service.search_by_label, methods=['GET'])
+        self.app.add_url_rule('/article/delete', view_func=self.resource_service.art_delete, methods=['DELETE'])
+        self.app.add_url_rule('/article/create', view_func=self.resource_service.art_create, methods=['POST'])
+        self.app.add_url_rule('/article/update_add_tags', view_func=self.resource_service.update_add_tags, methods=['PUT'])
+        self.app.add_url_rule('/article/update_delete_tags', view_func=self.resource_service.update_delete_tags, methods=['PUT'])
 
     def run(self):
         self.server = threading.Thread(target=self.app.run, kwargs={'host': self.host, 'port': self.port})
@@ -45,8 +47,8 @@ class Server:
         return 'Welcome to the inflow!'
 
     
-    def tags_all(self):
-        return str(self.tag_service.all())
+    # def tags_all(self):
+    #     return str(self.tag_service.all())
             
 
 SERVER_CONFIG = {
