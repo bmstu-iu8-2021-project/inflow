@@ -1,4 +1,5 @@
 import psycopg2
+from flask import jsonify
 
 class Tag:
 
@@ -31,7 +32,7 @@ class TagService:
     
         cursor.execute("SELECT id, label, color FROM tags")
 
-        return [Tag(*row) for row in cursor.fetchall()]
+        return jsonify([Tag(*row).__dict__ for row in cursor.fetchall()])
 
     def create(self, label, color):
         cursor = self.connection.cursor()

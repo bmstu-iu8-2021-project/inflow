@@ -6,6 +6,7 @@ import os
 from flask import Flask
 
 app = Flask(__name__)
+app.config['SERVER_NAME'] = 'inflow_dev:3000'
 
 import services
 
@@ -65,6 +66,7 @@ if __name__ == "__main__":
     address = os.environ.get("PROD_ADDR")
     if not address:
         address = "127.0.0.1"
+    address = "0.0.0.0"
 
     server = Server(address, "3000", SERVER_CONFIG)
     server.run()
