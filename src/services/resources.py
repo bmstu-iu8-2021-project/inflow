@@ -36,7 +36,7 @@ class ResourceService:
         cursor = self.connection.cursor()
         cursor.execute("SELECT id, label, link FROM resources WHERE label LIKE '%(%s)%'",(label))
 
-        return [Resource(*row) for row in cursor.fetchall()]
+        return [Resources(*row) for row in cursor.fetchall()]
 
     def art_delete(self, id):
         cursor = self.connection.cursor()
