@@ -6,50 +6,39 @@ import os
 
 from flask import Flask
 
-app = Flask(__name__)
 
-import services
+import database
+import routes
+
+
+def init_server(app, config):
+    db_connection = database.get_postgres_conntection(config["PG_VARS"])
+
+    tag_service = routes.TagService(db_connection)
+    resource_service = routes.ResourceService(db_connection)
 
 
 
-class Server:
-    def __init__(self, host, port, config):
-        self.host = host
-        self.port = port
-        # переменная app в которой лежит объект класса Flask, инициализируем объект через __name__
-        self.app = Flask(__name__)
-        # andpoint для выключения приложения
-        # в view_func= передаем параметр, который будет выполнять функцию shutdown
+    def index():
+        return 'Inflow!'
 
-        self.tag_service = services.TagService(SERVER_CONFIG["PG_VARS"])
-        self.resource_service = services.ResourceService(SERVER_CONFIG["PG_VARS"])
-        
-        self.app.add_url_rule('/', view_func=self.get_home)
-        self.app.add_url_rule('/home', view_func=self.get_home)
-        self.app.add_url_rule('/tags/all', view_func=self.tag_service.all, methods=['GET'])
-        self.app.add_url_rule('/tags/create', view_func=self.tag_service.create, methods=['POST'])
-        self.app.add_url_rule('/tags/delete', view_func=self.tag_service.delete, methods=['DELETE'])
-        self.app.add_url_rule('/tags/search', view_func=self.tag_service.search, methods=['GET'])
-        self.app.add_url_rule('/tags/join', view_func=self.tag_service.join, methods=['PUT'])
-        self.app.add_url_rule('/article/search_by_tag', view_func=self.resource_service.search_by_tag, methods=['GET'])
-        self.app.add_url_rule('/article/search_by_label', view_func=self.resource_service.search_by_label, methods=['GET'])
-        self.app.add_url_rule('/article/delete', view_func=self.resource_service.art_delete, methods=['DELETE'])
-        self.app.add_url_rule('/article/create', view_func=self.resource_service.art_create, methods=['POST'])
-        self.app.add_url_rule('/article/update_add_tags', view_func=self.resource_service.update_add_tags, methods=['PUT'])
-        self.app.add_url_rule('/article/update_delete_tags', view_func=self.resource_service.update_delete_tags, methods=['PUT'])
+    app.add_url_rule('/', view_func=index, methods=["GET"])
 
-    def run(self):
-        self.server = threading.Thread(target=self.app.run, kwargs={'host': self.host, 'port': self.port})
-        self.server.start()
-        return self.server
+    app.add_url_rule('/tags/all', view_func=tag_service.all, methods=['GET'])
+    app.add_url_rule('/tags/create', view_func=tag_service.create, methods=['POST'])
+    app.add_url_rule('/tags/delete', view_func=tag_service.delete, methods=['DELETE'])
+    app.add_url_rule('/tags/search', view_func=tag_service.search, methods=['GET'])
+    app.add_url_rule('/tags/join', view_func=tag_service.join, methods=['PUT'])
 
-    def get_home(self):
-        return 'Welcome to the inflow!'
+    app.add_url_rule('/article/search_by_tag', view_func=resource_service.search_by_tag, methods=['GET'])
+    app.add_url_rule('/article/search_by_label', view_func=resource_service.search_by_label, methods=['GET'])
+    app.add_url_rule('/article/delete', view_func=resource_service.art_delete, methods=['DELETE'])
+    app.add_url_rule('/article/create', view_func=resource_service.art_create, methods=['POST'])
+    app.add_url_rule('/article/update_add_tags', view_func=resource_service.update_add_tags, methods=['PUT'])
+    app.add_url_rule('/article/update_delete_tags', view_func=resource_service.update_delete_tags, methods=['PUT'])
 
-    
-    # def tags_all(self):
-    #     return str(self.tag_service.all())
-            
+
+
 
 SERVER_CONFIG = {
     "PG_VARS": {
@@ -62,10 +51,13 @@ SERVER_CONFIG = {
 }
 
 if __name__ == "__main__":
+    app = Flask(__name__)
+    
     address = os.environ.get("PROD_ADDR")
     if not address:
         address = "127.0.0.1"
     address = "0.0.0.0"
 
-    server = Server(address, "3000", SERVER_CONFIG)
-    server.run()
+    init_server(app, SERVER_CONFIG)
+    
+    app.run(host=address, port=3000, load_dotenv=False)

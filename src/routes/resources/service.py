@@ -6,12 +6,8 @@ sys.path.append('..')
 from models import Resource
 
 class ResourceService:
-    def __init__(self, db_vars):
-        self.connection = psycopg2.connect(
-            host=db_vars["PG_HOST"], user=db_vars["PG_USER"],
-            password=db_vars["PG_PASS"], port=db_vars["PG_PORT"],
-            database=db_vars["PG_DB"]
-        )
+    def __init__(self, db_connection):
+        self.connection = db_connection
 
     def search_by_tag(self, id, *args):
         cursor = self.connection.cursor()

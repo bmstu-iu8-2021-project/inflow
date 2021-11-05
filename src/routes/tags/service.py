@@ -8,14 +8,8 @@ from models import Tag
 
 class TagService:
 
-    def __init__(self, db_vars):
-        self.connection = psycopg2.connect(
-            host=db_vars["PG_HOST"],
-            port=db_vars["PG_PORT"],
-            user=db_vars["PG_USER"],
-            password=db_vars["PG_PASS"],
-            database=db_vars["PG_DB"]
-        )
+    def __init__(self, db_connection):
+        self.connection = db_connection
 
 
     def all(self):
