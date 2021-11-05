@@ -4,8 +4,10 @@ import sys
 sys.path.append('..')
 
 from models import Resource
+from utils import Singleton
 
-class ResourceService:
+
+class ResourceService(metaclass=Singleton):
     def __init__(self, db_connection):
         self.connection = db_connection
 
@@ -17,13 +19,13 @@ class ResourceService:
 
         cursor.execute("SELECT resources.id, resources.label, resources.link FROM resources JOIN tags_resources WHERE %s",(str))
 
-        return [Resources(*row) for row in cursor.fetchall()]
+        return [Resource(*row) for row in cursor.fetchall()]
 
     def search_by_label(self, label):
         cursor = self.connection.cursor()
         cursor.execute("SELECT id, label, link FROM resources WHERE label LIKE '%(%s)%'",(label))
 
-        return [Resources(*row) for row in cursor.fetchall()]
+        return [Resource(*row) for row in cursor.fetchall()]
 
     def art_delete(self, id):
         cursor = self.connection.cursor()

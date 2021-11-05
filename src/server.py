@@ -17,8 +17,6 @@ def init_server(app, config):
     tag_service = routes.TagService(db_connection)
     resource_service = routes.ResourceService(db_connection)
 
-
-
     def index():
         return 'Inflow!'
 

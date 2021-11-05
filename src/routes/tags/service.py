@@ -5,12 +5,14 @@ import sys
 sys.path.append('..')
 
 from models import Tag
+from utils import Singleton
 
-class TagService:
+
+class TagService(metaclass=Singleton):
 
     def __init__(self, db_connection):
         self.connection = db_connection
-
+        
 
     def all(self):
         cursor = self.connection.cursor()
