@@ -6,7 +6,7 @@ services:
     image: postgres
     container_name: inflow_pg_db
     volumes:
-      - ./.temp/postgres:/var/lib/postgresql/data/
+      - postgres_data:/var/lib/postgresql/data/
     environment:
       POSTGRES_USER: inflow-client
       POSTGRES_PASSWORD: QwerTY
@@ -44,3 +44,6 @@ services:
 networks:
   inflow-net:
     driver: bridge
+
+volumes:
+  postgres_data:

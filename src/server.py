@@ -5,17 +5,14 @@ import threading
 import os
 
 from flask import Flask
-from waitress import serve
 
 app = Flask(__name__)
-app.config['SERVER_NAME'] = 'inflow_dev:3000'
 
 import services
 
 
 
 class Server:
-
     def __init__(self, host, port, config):
         self.host = host
         self.port = port
@@ -42,10 +39,7 @@ class Server:
         self.app.add_url_rule('/article/update_delete_tags', view_func=self.resource_service.update_delete_tags, methods=['PUT'])
 
     def run(self):
-        # self.server = threading.Thread(target=self.app.run, kwargs={'host': self.host, 'port': self.port})
-        
-        self.server = threading.Thread(target=serve, args=(app,), kwargs={'host': self.host, 'port': self.port})
-        
+        self.server = threading.Thread(target=self.app.run, kwargs={'host': self.host, 'port': self.port})
         self.server.start()
         return self.server
 
