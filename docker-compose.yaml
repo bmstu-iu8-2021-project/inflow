@@ -8,9 +8,9 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data/
     environment:
-      POSTGRES_USER: inflow-client
-      POSTGRES_PASSWORD: QwerTY
-      POSTGRES_DB: inflow
+      POSTGRES_USER:     ${INFLOW_PG_USER}
+      POSTGRES_PASSWORD: ${INFLOW_PG_PASS}
+      POSTGRES_DB:       ${INFLOW_PG_DB}
     ports:
       - 5432:5432
     networks:
@@ -26,12 +26,13 @@ services:
     command: ["./scripts/wait-for-postgres.sh", "python", "src/server.py"]
     # command: ["./scripts/wait-for-postgres.sh", "flask", "--help"]
     environment:
-      PROD_ADDR: '0.0.0.0'
-      PG_USER: inflow-client
-      PG_PASS: QwerTY
-      PG_DB:   inflow
-      PG_PORT: 5432
-      PG_HOST: inflow_pg_db
+      PROD_ADDR: ${INFLOW_PROD_ADDR}
+
+      PG_USER: ${INFLOW_PG_USER}
+      PG_PASS: ${INFLOW_PG_PASS}
+      PG_DB:   ${INFLOW_PG_DB}
+      PG_PORT: ${INFLOW_PG_PORT}
+      PG_HOST: ${INFLOW_PG_HOST}
     ports:
       - 3000:3000
       - 5432
