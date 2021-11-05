@@ -1,20 +1,10 @@
 import psycopg2
 from flask import jsonify
 
-class Tag:
+import sys
+sys.path.append('..')
 
-    def __init__(self, id, label, color):
-        self.id = id
-        self.label = label
-        self.color = color
-
-
-    def __str__(self):
-        return "tag[{}]({}, {})".format(self.id, self.label, self.color)
-
-    def __repr__(self):
-        return str(self)
-
+from models import Tag
 
 class TagService:
 
@@ -26,6 +16,7 @@ class TagService:
             password=db_vars["PG_PASS"],
             database=db_vars["PG_DB"]
         )
+
 
     def all(self):
         cursor = self.connection.cursor()
