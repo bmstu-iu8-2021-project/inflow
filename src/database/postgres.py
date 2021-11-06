@@ -9,3 +9,11 @@ def get_postgres_conntection(params: dict):
             password=params["PG_PASS"],
             database=params["PG_DB"]
         )
+
+
+def create_schema(conn, filepath):
+    cursor = conn.cursor()
+
+    with open(filepath, 'r') as file:
+        schema_sql = file.read()
+        cursor.execute(schema_sql)
