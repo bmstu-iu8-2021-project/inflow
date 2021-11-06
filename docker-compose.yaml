@@ -26,6 +26,8 @@ services:
     environment:
       PROD_ADDR: ${INFLOW_PROD_ADDR}
 
+      SCHEMA_FILEPATH: src/database/schema.sql
+
       PG_USER: ${INFLOW_PG_USER}
       PG_PASS: ${INFLOW_PG_PASS}
       PG_DB:   ${INFLOW_PG_DB}
