@@ -17,10 +17,12 @@ services:
       - default
       - inflow-net
 
-  api:
+  dev-api:
     build: 
       context: ./
-    container_name: inflow_api
+    container_name: inflow_dev_api
+    volumes:
+      - ./src:/app/src # /${WORKDIR}/src
     command: ["./scripts/wait-for-postgres.sh", "python", "src/server.py"]
     # command: ["./scripts/wait-for-postgres.sh", "flask", "--help"]
     environment:

@@ -65,6 +65,11 @@ if __name__ == "__main__":
         address = "127.0.0.1"
     address = "0.0.0.0"
 
+    debug = not bool(os.environ.get("DEBUG")) and os.environ.get("DEBUG", "").lower() != "true"
+
+    if debug:
+        print("DEGUB mode: on")
+
     init_server(app, SERVER_CONFIG)
     
-    app.run(host=address, port=3000, load_dotenv=False)
+    app.run(host=address, port=3000, load_dotenv=False, debug=debug)
