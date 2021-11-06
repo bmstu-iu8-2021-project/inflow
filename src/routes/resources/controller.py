@@ -29,3 +29,7 @@ class ResourceController(metaclass=Singleton):
         resource: Resource = self.resourses.create(label, link)
 
         return jsonify(resource.__dict__)
+
+    def status(self): 
+        status = self.resourses.status()
+        return jsonify(status)
