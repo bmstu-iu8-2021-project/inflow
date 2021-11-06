@@ -32,9 +32,10 @@ class ResourceService(metaclass=Singleton):
         cursor.execute("DELETE id, label, link FROM resources WHERE id = %s",(id))
         cursor.execute("DELETE id, label, link FROM tags_resources WHERE resources_id = %s",(id))
 
-    def art_create(self, label, link):
-        cursor = self.connection.cursor()
+    def create(self, label, link):
 
+        return Resource(0, label, link)
+        cursor = self.connection.cursor()
         cursor.execute("INSERT INTO resources(label, link) VALUES (%s, %s)", (label, link))
 
     def update_add_tags(self, tag_id, resources_id):

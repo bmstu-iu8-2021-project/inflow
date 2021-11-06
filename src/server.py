@@ -17,6 +17,13 @@ def init_server(app, config):
     tag_service = routes.TagService(db_connection)
     resource_service = routes.ResourceService(db_connection)
 
+    services = {
+        "tags": tag_service,
+        "resources": resource_service,
+    }
+
+    resource_controller = routes.ResourceController(services)
+
     def index():
         return 'Inflow!'
 
@@ -28,10 +35,12 @@ def init_server(app, config):
     app.add_url_rule('/tags/search', view_func=tag_service.search, methods=['GET'])
     app.add_url_rule('/tags/join', view_func=tag_service.join, methods=['PUT'])
 
+    app.add_url_rule('/resource/create', '/resource/create', resource_controller.create, methods=["POST"])
+
     app.add_url_rule('/article/search_by_tag', view_func=resource_service.search_by_tag, methods=['GET'])
     app.add_url_rule('/article/search_by_label', view_func=resource_service.search_by_label, methods=['GET'])
     app.add_url_rule('/article/delete', view_func=resource_service.art_delete, methods=['DELETE'])
-    app.add_url_rule('/article/create', view_func=resource_service.art_create, methods=['POST'])
+    # app.add_url_rule('/article/create', view_func=resource_service.art_create, methods=['POST'])
     app.add_url_rule('/article/update_add_tags', view_func=resource_service.update_add_tags, methods=['PUT'])
     app.add_url_rule('/article/update_delete_tags', view_func=resource_service.update_delete_tags, methods=['PUT'])
 
