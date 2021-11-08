@@ -40,7 +40,7 @@ def init_server(app, config):
     # app.add_url_rule('/resource/create', '/resource/create', resource_controller.create, methods=["POST"])
     app.add_url_rule('/resources/status', '/resources/status', resource_controller.status, methods=["GET"])
 
-    # app.add_url_rule('/article/search_by_tag', view_func=resource_service.search_by_tag, methods=['GET'])
+    app.add_url_rule('/resources/search_by_tag', '/resources/search_by_tag', view_func=resource_controller.search_by_tag, methods=['GET'])
     # app.add_url_rule('/article/search_by_label', view_func=resource_service.search_by_label, methods=['GET'])
     # app.add_url_rule('/article/delete', view_func=resource_service.art_delete, methods=['DELETE'])
     # # app.add_url_rule('/article/create', view_func=resource_service.art_create, methods=['POST'])
@@ -72,7 +72,7 @@ if __name__ == "__main__":
     debug = not bool(os.environ.get("DEBUG")) and os.environ.get("DEBUG", "").lower() != "true"
 
     if debug:
-        print("DEGUB mode: on")
+        print("DEBUG: on")
 
     init_server(app, SERVER_CONFIG)
     
