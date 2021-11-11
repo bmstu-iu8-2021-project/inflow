@@ -16,36 +16,35 @@ def init_server(app, config):
 
     database.create_schema(db_pool, config["SCHEMA_FILEPATH"])
 
-    # tag_service = routes.TagService(db_pool)
+    tag_service = routes.TagService(db_pool)
     resource_service = routes.ResourceService(db_pool)
 
     services = {
-        # "tags": tag_service,
+        "tags": tag_service,
         "resources": resource_service,
     }
 
     resource_controller = routes.ResourceController(services)
+    tag_controller = routes.TagController(services)
 
     def index():
         return 'Inflow!'
 
     app.add_url_rule('/', view_func=index, methods=["GET"])
 
-    # app.add_url_rule('/tags/all', view_func=tag_service.all, methods=['GET'])
-    # app.add_url_rule('/tags/create', view_func=tag_service.create, methods=['POST'])
-    # app.add_url_rule('/tags/delete', view_func=tag_service.delete, methods=['DELETE'])
-    # app.add_url_rule('/tags/search', view_func=tag_service.search, methods=['GET'])
-    # app.add_url_rule('/tags/join', view_func=tag_service.join, methods=['PUT'])
+    app.add_url_rule('/tags/all', '/tags/all', view_func=tag_controller.all, methods=['GET'])
+    app.add_url_rule('/tags/create', '/tags/create', view_func=tag_controller.create, methods=['POST'])
+    app.add_url_rule('/tags/delete', '/tags/delete', view_func=tag_controller.delete, methods=['DELETE'])
+    app.add_url_rule('/tags/search', '/tags/search', view_func=tag_controller.search, methods=['GET'])
+    app.add_url_rule('/tags/join', '/tags/join', view_func=tag_controller.join, methods=['PUT'])
 
-    # app.add_url_rule('/resource/create', '/resource/create', resource_controller.create, methods=["POST"])
     app.add_url_rule('/resources/status', '/resources/status', resource_controller.status, methods=["GET"])
-
     app.add_url_rule('/resources/search_by_tag', '/resources/search_by_tag', view_func=resource_controller.search_by_tag, methods=['GET'])
-    # app.add_url_rule('/article/search_by_label', view_func=resource_service.search_by_label, methods=['GET'])
-    # app.add_url_rule('/article/delete', view_func=resource_service.art_delete, methods=['DELETE'])
-    # # app.add_url_rule('/article/create', view_func=resource_service.art_create, methods=['POST'])
-    # app.add_url_rule('/article/update_add_tags', view_func=resource_service.update_add_tags, methods=['PUT'])
-    # app.add_url_rule('/article/update_delete_tags', view_func=resource_service.update_delete_tags, methods=['PUT'])
+    app.add_url_rule('/resources/search_by_title', '/resources/search_by_title', view_func=resource_controller.search_by_title, methods=['GET'])
+    app.add_url_rule('/resources/delete', '/resources/delete', view_func=resource_controller.delete, methods=['DELETE'])
+    app.add_url_rule('/resources/create', '/resources/create', view_func=resource_controller.create, methods=['POST'])
+    app.add_url_rule('/resources/update_add_tags', '/resources/update_add_tags', view_func=resource_controller.update_add_tags, methods=['PUT'])
+    app.add_url_rule('/resources/update_delete_tags', '/resources/update_delete_tags', view_func=resource_controller.update_delete_tags, methods=['PUT'])
 
 
 

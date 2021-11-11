@@ -8,7 +8,7 @@ from flask import request
 sys.path.append('..')
 
 from .service import ResourceService
-from models import Resource, resource
+from models import Resource
 from utils import Singleton
 
 
@@ -23,11 +23,11 @@ class ResourceController(metaclass=Singleton):
         jsonbody: dict = request.get_json(force=True)
 
         # TODO: check keys
-        label: str = jsonbody.get("label")
+        title: str = jsonbody.get("title")
         link: str = jsonbody.get("link")
 
         # TODO: handle service's exceptions
-        resource: Resource = self.resourses.create(label, link)
+        resource: Resource = self.resourses.create(title, link)
 
         return jsonify(resource)
 
@@ -35,21 +35,17 @@ class ResourceController(metaclass=Singleton):
         status = self.resourses.status()
         return jsonify(status)
 
-    def search_by_tag(self):
+    def search_by_tags(self):
         jsonbody: dict = request.get_json(force=True)
-        str=""
-        for key, tags in jsonbody.items():
-            if key == "id":
-                str += tags + ","
-        str -= ","
-        result = self.resourses.search_by_tag(str)
+        tags: str = jsonbody.get("tags")
+        result = self.resourses.search_by_tag(tags)
         return jsonify(result)
 
-    def search_by_label(self):
+    def search_by_title(self):
         jsonbody: dict = request.get_json(force=True)
 
-        label: str = jsonbody.get("label")
-        result = self.resourses.search_by_label(label)
+        title: str = jsonbody.get("title")
+        result = self.resourses.search_by_title(title)
         return jsonify(result)
 
     def delete(self):
