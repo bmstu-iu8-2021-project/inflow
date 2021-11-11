@@ -1,4 +1,4 @@
-from _typeshed import Self
+# from _typeshed import Self
 import sys
 from flask.json import jsonify
 import psycopg2
