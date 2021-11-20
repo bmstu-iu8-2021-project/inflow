@@ -30,8 +30,11 @@ def init_server(app, config):
     def index():
         return render_template('inflow.html')
         # return 'Inflow!'
+    def auth():
+        return render_template('auth.html')
 
     app.add_url_rule('/', view_func=index, methods=["GET"])
+    app.add_url_rule('/auth', view_func=auth, methods=["GET"])
 
     app.add_url_rule('/tags/all', '/tags/all', view_func=tag_controller.all, methods=['GET'])
     app.add_url_rule('/tags/create', '/tags/create', view_func=tag_controller.create, methods=['POST'])
