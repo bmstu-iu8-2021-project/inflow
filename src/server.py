@@ -4,7 +4,7 @@ from re import A
 import threading
 import os
 
-from flask import Flask
+from flask import Flask, render_template
 
 
 import database
@@ -28,7 +28,8 @@ def init_server(app, config):
     tag_controller = routes.TagController(services)
 
     def index():
-        return 'Inflow!'
+        return render_template('inflow.html')
+        # return 'Inflow!'
 
     app.add_url_rule('/', view_func=index, methods=["GET"])
 
