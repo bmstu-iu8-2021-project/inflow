@@ -22,30 +22,40 @@ class TagController(metaclass=Singleton):
         jsonbody: dict = request.get_json(force=True)
 
         # TODO: check keys
-        label: str = jsonbody.get("label")
-        color: str = jsonbody.get("color")
+        if "label" and "color" in jsonbody:
+            label: str = jsonbody.get("label")
+            color: str = jsonbody.get("color")
 
-        # TODO: handle service's exceptions
-        tag: Tag = self.tags.create(label, color)
-
-        return jsonify(tag)
+            # TODO: handle service's exceptions
+            tag: Tag = self.tags.create(label, color)
+            return jsonify(tag)
+        else:
+            return {"error": "incorrect data entered"}
 
     def delete(self):
         jsonbody: dict = request.get_json(force=True)
-        id: str = jsonbody.get("id")
-        self.tags.delete(id)
+        if "id" in jsonbody:
+            id: str = jsonbody.get("id")
+            self.tags.delete(id)
+        else:
+            return {"error": "incorrect data entered"}
 
     def search(self):
         jsonbody: dict = request.get_json(force=True)
-
-        label: str = jsonbody.get("label")
-        result = self.tags.search(label)
-        return jsonify(result)
+        if "label" in jsonbody:
+            label: str = jsonbody.get("label")
+            result = self.tags.search(label)
+            return jsonify(result)
+        else:
+            return {"error": "incorrect data entered"}
 
     def join(self):
         jsonbody: dict = request.get_json(force=True)
-        tags: str = jsonbody.get("tags")
-        self.resourses.search_by_tag(tags)
+        if "tags" in jsonbody:
+            tags: str = jsonbody.get("tags")
+            self.resourses.search_by_tag(tags)
+        else:
+            return {"error": "incorrect data entered"}
 
     def all(self):
         result = self.tags.all()

@@ -52,6 +52,7 @@ class ResourceService(metaclass=Singleton):
         cursor = conn.cursor()
         cursor.execute("DELETE id, title, link FROM resources WHERE id = %s;",(id))
         cursor.execute("DELETE tag_id, resource_id FROM tags_resources WHERE resource_id = %s;",(id))
+        conn.commit()
         cursor.close()
         self.pool.putconn(conn)
 
@@ -60,6 +61,7 @@ class ResourceService(metaclass=Singleton):
         cursor = conn.cursor()
         cursor.execute("INSERT INTO resources(title, link) VALUES (%s, %s);", (title, link))
         result = [Resource(*row).__dict__ for row in cursor.fetchall()]
+        conn.commit()
         cursor.close()
         self.pool.putconn(conn)
         return result
@@ -68,6 +70,7 @@ class ResourceService(metaclass=Singleton):
         conn = self.pool.getconn()
         cursor = conn.cursor()
         cursor.execute("INSERT INTO tags_resources(tag_id, resource_id) VALUES (%s, %s);",(tag_id, resource_id))
+        conn.commit()
         cursor.close()
         self.pool.putconn(conn)
 
@@ -75,6 +78,7 @@ class ResourceService(metaclass=Singleton):
         conn = self.pool.getconn()
         cursor = conn.cursor()
         cursor.execute("DELETE resources_id, tag_id FROM tags_resources WHERE tag_id = %s AND resource_id = %s;",(tag_id, resource_id))
+        conn.commit()
         cursor.close()
         self.pool.putconn(conn)
 

@@ -16,20 +16,24 @@ class ResourceController(metaclass=Singleton):
 
     def __init__(self, services: dict):
         # TODO: raise exception if services doesn't contain "resources"
-        self.resourses: ResourceService = services.get("resources")
+        if "resources" in services:
+            self.resourses: ResourceService = services.get("resources")
         
 
     def create(self): 
         jsonbody: dict = request.get_json(force=True)
 
         # TODO: check keys
-        title: str = jsonbody.get("title")
-        link: str = jsonbody.get("link")
+        if "title" and "link" in jsonbody:
+            title: str = jsonbody.get("title")
+            link: str = jsonbody.get("link")
 
-        # TODO: handle service's exceptions
-        resource: Resource = self.resourses.create(title, link)
+            # TODO: handle service's exceptions
+            resource: Resource = self.resourses.create(title, link)
 
-        return jsonify(resource)
+            return jsonify(resource)
+        else:
+            return {"error": "incorrect data entered"}
 
     def status(self): 
         status = self.resourses.status()
@@ -37,41 +41,55 @@ class ResourceController(metaclass=Singleton):
 
     def search_by_tags(self):
         jsonbody: dict = request.get_json(force=True)
-        tags: str = jsonbody.get("tags")
-        result = self.resourses.search_by_tag(tags)
-        return jsonify(result)
+        if "tags" in jsonbody:
+            tags: str = jsonbody.get("tags")
+            result = self.resourses.search_by_tag(tags)
+            return jsonify(result)
+        else:
+            return {"error": "incorrect data entered"}
 
     def search_by_title(self):
         jsonbody: dict = request.get_json(force=True)
-
-        title: str = jsonbody.get("title")
-        result = self.resourses.search_by_title(title)
-        return jsonify(result)
+        if "title" in jsonbody:
+            title: str = jsonbody.get("title")
+            result = self.resourses.search_by_title(title)
+            return jsonify(result)
+        else:
+            return {"error": "incorrect data entered"}
 
     def delete(self):
         jsonbody: dict = request.get_json(force=True)
-        id: str = jsonbody.get("id")
-        self.resourses.delete(id)
+        if "id" in jsonbody:
+            id: str = jsonbody.get("id")
+            self.resourses.delete(id)
+        else:
+            return {"error": "incorrect data entered"}
 
     def update_add_tags(self):
         jsonbody: dict = request.get_json(force=True)
-        resource_id = ""
-        tag_id = ""
-        for value in jsonbody:
-            if value == Resource:
-                resource_id = value.get("id")
-            if value == Resource:
-                tag_id = value.get("id")
-        self.resourses.update_add_tags(tag_id, resource_id)
+        # resource_id = ""
+        # tag_id = ""
+        if "tags" in jsonbody:
+            for value in jsonbody:
+                if value == Resource:
+                    resource_id = value.get("id")
+                if value == Resource:
+                    tag_id = value.get("id")
+            self.resourses.update_add_tags(tag_id, resource_id)
+        else:
+            return {"error": "incorrect data entered"}
 
     def update_delete_tags(self):
         jsonbody: dict = request.get_json(force=True)
-        resource_id = ""
-        tag_id = ""
-        for value in jsonbody:
-            if value == Resource:
-                resource_id = value.get("id")
-            if value == Resource:
-                tag_id = value.get("id")
-        self.resourses.update_delete_tags(tag_id, resource_id)    
+        # resource_id = ""
+        # tag_id = ""
+        if "tags" in jsonbody:
+            for value in jsonbody:
+                if value == Resource:
+                    resource_id = value.get("id")
+                if value == Resource:
+                    tag_id = value.get("id")
+            self.resourses.update_delete_tags(tag_id, resource_id)  
+        else:
+            return {"error": "incorrect data entered"}  
 
