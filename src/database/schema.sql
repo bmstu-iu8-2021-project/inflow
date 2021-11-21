@@ -13,6 +13,13 @@ CREATE TABLE IF NOT EXISTS resources
     link    TEXT
 );
 
+CREATE TABLE IF NOT EXISTS users
+(
+    id      BIGSERIAL PRIMARY KEY,
+    login   VARCHAR(256),
+    password    TEXT
+);
+
 CREATE TABLE IF NOT EXISTS tags_recources
 (
     tag_id INTEGER,

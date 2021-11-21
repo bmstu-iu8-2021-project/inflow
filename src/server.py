@@ -3,6 +3,7 @@
 from re import A
 import threading
 import os
+from flask_login import login_manager
 
 from flask import Flask, render_template
 
@@ -15,6 +16,8 @@ def init_server(app, config):
     db_pool = database.get_postgres_conn_pool(config["PG_VARS"])
 
     database.create_schema(db_pool, config["SCHEMA_FILEPATH"])
+
+    manager = login_manager(app)
 
     tag_service = routes.TagService(db_pool)
     resource_service = routes.ResourceService(db_pool)
@@ -32,6 +35,10 @@ def init_server(app, config):
         # return 'Inflow!'
     def auth():
         return render_template('auth.html')
+
+    manager.user_loader()
+    # def load_user(user_id):
+    #     return User.
 
     app.add_url_rule('/', view_func=index, methods=["GET"])
     app.add_url_rule('/auth', view_func=auth, methods=["GET"])

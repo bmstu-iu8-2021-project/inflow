@@ -33,7 +33,7 @@ class TagService(metaclass=Singleton):
         try:
             conn = self.pool.getconn()
             cursor = conn.cursor()
-            cursor.execute("DO $$ BEGIN INSERT INTO tags (label, color) VALUES (%s, %s) RETURNING id; EXCEPTION WHEN unique_violation THEN RAISE NOTICE 'Illegal operation: %', SQLERRM; END $$;", (label, color))
+            cursor.execute("INSERT INTO tags (label, color) VALUES (%s, %s) RETURNING id;", (label, color))
             id = cursor.fetchone()[0]
             
             conn.commit()
