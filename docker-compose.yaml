@@ -24,6 +24,7 @@ services:
       context: ./
     container_name: inflow_api
     command: ["./scripts/wait-for-postgres.sh", "python", "src/server.py"]
+    # command: ["./scripts/wait-for-postgres.sh", "flask", "--help"]
     environment:
       PROD_ADDR: '0.0.0.0'
       PG_USER: inflow-client

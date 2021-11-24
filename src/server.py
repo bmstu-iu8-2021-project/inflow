@@ -1,11 +1,14 @@
 #!/usr/bin/python3
 
+from re import A
 import threading
 import os
 
 from flask import Flask
+from waitress import serve
 
 app = Flask(__name__)
+app.config['SERVER_NAME'] = 'inflow_dev:3000'
 
 import services
 
@@ -22,13 +25,27 @@ class Server:
         # в view_func= передаем параметр, который будет выполнять функцию shutdown
 
         self.tag_service = services.TagService(SERVER_CONFIG["PG_VARS"])
+        self.resource_service = services.ResourceService(SERVER_CONFIG["PG_VARS"])
         
         self.app.add_url_rule('/', view_func=self.get_home)
         self.app.add_url_rule('/home', view_func=self.get_home)
-        self.app.add_url_rule('/tags/all', view_func=self.tags_all, methods=['GET'])
+        self.app.add_url_rule('/tags/all', view_func=self.tag_service.all, methods=['GET'])
+        self.app.add_url_rule('/tags/create', view_func=self.tag_service.create, methods=['POST'])
+        self.app.add_url_rule('/tags/delete', view_func=self.tag_service.delete, methods=['DELETE'])
+        self.app.add_url_rule('/tags/search', view_func=self.tag_service.search, methods=['GET'])
+        self.app.add_url_rule('/tags/join', view_func=self.tag_service.join, methods=['PUT'])
+        self.app.add_url_rule('/article/search_by_tag', view_func=self.resource_service.search_by_tag, methods=['GET'])
+        self.app.add_url_rule('/article/search_by_label', view_func=self.resource_service.search_by_label, methods=['GET'])
+        self.app.add_url_rule('/article/delete', view_func=self.resource_service.art_delete, methods=['DELETE'])
+        self.app.add_url_rule('/article/create', view_func=self.resource_service.art_create, methods=['POST'])
+        self.app.add_url_rule('/article/update_add_tags', view_func=self.resource_service.update_add_tags, methods=['PUT'])
+        self.app.add_url_rule('/article/update_delete_tags', view_func=self.resource_service.update_delete_tags, methods=['PUT'])
 
     def run(self):
-        self.server = threading.Thread(target=self.app.run, kwargs={'host': self.host, 'port': self.port})
+        # self.server = threading.Thread(target=self.app.run, kwargs={'host': self.host, 'port': self.port})
+        
+        self.server = threading.Thread(target=serve, args=(app,), kwargs={'host': self.host, 'port': self.port})
+        
         self.server.start()
         return self.server
 
@@ -36,8 +53,8 @@ class Server:
         return 'Welcome to the inflow!'
 
     
-    def tags_all(self):
-        return str(self.tag_service.all())
+    # def tags_all(self):
+    #     return str(self.tag_service.all())
             
 
 SERVER_CONFIG = {
@@ -54,6 +71,7 @@ if __name__ == "__main__":
     address = os.environ.get("PROD_ADDR")
     if not address:
         address = "127.0.0.1"
+    address = "0.0.0.0"
 
     server = Server(address, "3000", SERVER_CONFIG)
     server.run()
