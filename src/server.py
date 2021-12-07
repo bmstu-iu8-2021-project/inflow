@@ -4,6 +4,7 @@ from re import A
 import threading
 import os
 from flask_login import login_manager
+from flask_jwt_extended import JWTManager
 
 from flask import Flask, render_template
 
@@ -17,7 +18,7 @@ def init_server(app, config):
 
     database.create_schema(db_pool, config["SCHEMA_FILEPATH"])
 
-    manager = login_manager(app)
+    # manager = login_manager(app)
 
     tag_service = routes.TagService(db_pool)
     resource_service = routes.ResourceService(db_pool)
@@ -36,7 +37,7 @@ def init_server(app, config):
     def auth():
         return render_template('auth.html')
 
-    manager.user_loader()
+    # manager.user_loader()
     # def load_user(user_id):
     #     return User.
 
