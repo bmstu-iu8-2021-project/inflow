@@ -4,6 +4,7 @@ from flask.json import jsonify
 import psycopg2
 
 from flask import request
+from passlib.hash import bcrypt
 
 sys.path.append('..')
 
@@ -30,3 +31,6 @@ class AuthController(metaclass=Singleton):
             return jsonify(user)
         else:
             return {"error": "incorrect data entered"}
+
+    def get_token(self):
+        return jsonify(self.users.get_token)

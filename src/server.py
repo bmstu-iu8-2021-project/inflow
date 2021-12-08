@@ -4,7 +4,7 @@ from re import A
 import threading
 import os
 from flask_login import login_manager
-from flask_jwt_extended import JWTManager
+from flask_jwt_extended import JWTManager, jwt_manager
 
 from flask import Flask, render_template
 
@@ -74,6 +74,8 @@ SERVER_CONFIG = {
 
 if __name__ == "__main__":
     app = Flask(__name__)
+
+    jwt = JWTManager(app)
     
     address = os.environ.get("PROD_ADDR")
     if not address:

@@ -6,3 +6,6 @@ from .resources.controller import ResourceController
 
 from .users.service import UserService
 from .users.controller import UserController
+
+from .auth.service import AuthService
+from .auth.controller import AuthController

@@ -24,6 +24,8 @@ CREATE TABLE IF NOT EXISTS tags_recources
 (
     tag_id INTEGER,
     resource_id INTEGER,
+    user_id INTEGER,
+    FOREIGN KEY (user_id) REFERENCES users(id),
     FOREIGN KEY (tag_id) REFERENCES tags(id),
     FOREIGN KEY (resource_id) REFERENCES resources(id)
 );

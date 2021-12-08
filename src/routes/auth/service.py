@@ -1,5 +1,6 @@
 import psycopg2
 from flask import jsonify
+from flask_jwt_extended import create_access_token
 
 import sys
 
@@ -14,6 +15,10 @@ class AuthService(metaclass=Singleton):
 
     def __init__(self, pool):
         self.pool = pool
+
+    def get_token(self):
+        token = create_access_token(identity=self.id)
+        return token
 
     def create(self, login, password):
         try:
