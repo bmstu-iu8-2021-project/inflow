@@ -7,6 +7,7 @@ from flask_login import login_manager
 from flask_jwt_extended import JWTManager, jwt_manager
 
 from flask import Flask, render_template
+from config import Config
 
 
 import database
@@ -74,6 +75,8 @@ SERVER_CONFIG = {
 
 if __name__ == "__main__":
     app = Flask(__name__)
+
+    app.config.from_object(Config)
 
     jwt = JWTManager(app)
     

@@ -24,7 +24,7 @@ class AuthController(metaclass=Singleton):
         # TODO: check keys
         if "login" and "password" in jsonbody:
             login: str = jsonbody.get("login")
-            password: str = jsonbody.get("password")
+            password: str = bcrypt.hash(jsonbody.get("password"))
 
             # TODO: handle service's exceptions
             user: User = self.users.create(login, password)
@@ -34,3 +34,18 @@ class AuthController(metaclass=Singleton):
 
     def get_token(self):
         return jsonify(self.users.get_token)
+
+    def authenticate(self):
+
+        jsonbody: dict = request.get_json(force=True)
+
+        # TODO: check keys
+        if "login" and "password" in jsonbody:
+            login: str = jsonbody.get("login")
+            password: str = bcrypt.hash(jsonbody.get("password"))
+
+            # TODO: handle service's exceptions
+            user: User = self.users.authenticate(login, password)
+            return jsonify(user)
+        else:
+            return {"error": "incorrect data entered"}       

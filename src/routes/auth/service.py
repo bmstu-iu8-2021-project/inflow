@@ -1,6 +1,7 @@
 import psycopg2
 from flask import jsonify
 from flask_jwt_extended import create_access_token
+from passlib.hash import bcrypt
 
 import sys
 
@@ -34,5 +35,23 @@ class AuthService(metaclass=Singleton):
             self.pool.putconn(conn)
             return [User(*row).__dict__ for row in cursor.fetchall()]
             # return user.__dict__
+        except:
+            return "oops"
+
+    def authenticate(self, login, password):
+        try:
+            conn = self.pool.getconn()
+            cursor = conn.cursor()
+            cursor.execute("SELECT password FROM users WHERE login LIKE %s;", (login))
+            true_password = cursor.fetchone()[0]
+            
+            conn.commit()
+            
+            cursor.close()
+            self.pool.putconn(conn)
+            if not bcrypt.verify(password, true_password):
+                return Exception("No user with this password")
+            else:
+                return id
         except:
             return "oops"
