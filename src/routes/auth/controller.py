@@ -18,6 +18,9 @@ class AuthController(metaclass=Singleton):
         # TODO: raise exception if services doesn't contain "resources"
         self.users: AuthService = services.get("users")
 
+    def get_token(self):
+        return jsonify(self.users.get_token)
+
     def create(self): 
         jsonbody: dict = request.get_json(force=True)
 
@@ -28,12 +31,11 @@ class AuthController(metaclass=Singleton):
 
             # TODO: handle service's exceptions
             user: User = self.users.create(login, password)
-            return jsonify(user)
+            # return jsonify(user)
+            token = self.users.get_token()
+            return {'access token': token}
         else:
             return {"error": "incorrect data entered"}
-
-    def get_token(self):
-        return jsonify(self.users.get_token)
 
     def authenticate(self):
 
@@ -46,6 +48,13 @@ class AuthController(metaclass=Singleton):
 
             # TODO: handle service's exceptions
             user: User = self.users.authenticate(login, password)
-            return jsonify(user)
+            # return jsonify(user)
+            token = self.users.get_token()
+            return {'access token': token}
         else:
-            return {"error": "incorrect data entered"}       
+            return {"error": "incorrect data entered"}    
+
+    # def login(self):
+
+    #     jsonbody: dict = request.get_json(force=True)  
+

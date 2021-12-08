@@ -4,7 +4,7 @@ from re import A
 import threading
 import os
 from flask_login import login_manager
-from flask_jwt_extended import JWTManager, jwt_manager
+from flask_jwt_extended import JWTManager, jwt_required, get_jwt_identity
 
 from flask import Flask, render_template
 from config import Config
@@ -23,14 +23,17 @@ def init_server(app, config):
 
     tag_service = routes.TagService(db_pool)
     resource_service = routes.ResourceService(db_pool)
+    auth_service = routes.AuthService(db_pool)
 
     services = {
         "tags": tag_service,
         "resources": resource_service,
+        "auth": auth_service,
     }
 
     resource_controller = routes.ResourceController(services)
     tag_controller = routes.TagController(services)
+    auth_controller = routes.AuthController(services)
 
     def index():
         return render_template('inflow.html')
@@ -43,7 +46,9 @@ def init_server(app, config):
     #     return User.
 
     app.add_url_rule('/', view_func=index, methods=["GET"])
-    app.add_url_rule('/auth', view_func=auth, methods=["GET"])
+    # app.add_url_rule('/auth', view_func=auth, methods=["GET"])
+    app.add_url_rule('/authenticate', view_func=auth_controller.authenticate, methods=["POST"])
+    app.add_url_rule('/register', view_func=auth_controller.create, methods=["POST"])
 
     app.add_url_rule('/tags/all', '/tags/all', view_func=tag_controller.all, methods=['GET'])
     app.add_url_rule('/tags/create', '/tags/create', view_func=tag_controller.create, methods=['POST'])
