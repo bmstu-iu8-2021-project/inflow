@@ -16,8 +16,8 @@
                 <input type="submit" value="Найти"></p>
             <p><input type="submit" value="все теги"></p>
             <hr>
-            <div class="conteiner">
-                <div class="tags">
+            <div class="all_tags">
+                <!-- <div class="tags">
                     <a>#Россия</a>
                 </div>
                 <div class="tags">
@@ -25,10 +25,38 @@
                 </div>
                 <div class="tags">
                     <a>#Польша</a>
-                </div>
+                </div> -->
+
+                <a class="tags">#Россия</a>
+                <a class="tags">#Армения</a>
+                <a class="tags">#Польша</a>
+                <a class="tags">#Россия</a>
+                <a class="tags">#Армения</a>
+                <a class="tags">#Польша</a>
+                <a class="tags">#Россия</a>
+                <a class="tags">#Армения</a>
+                <a class="tags">#Польша</a>
+
             </div>
         </form>
     </div>
 </body>
+
+<script>
+    function scanTag(tags) {
+        for (var i = 0; i < tags.length; i++) {
+            addTag(tags[i]);
+        }
+    }
+
+    function addTag(tag) {
+        // let tags = document.querySelector('all_tags')
+        var newTag = document.createElement("a");
+        newTag.setAttribute('class', "tags");
+        newTag.innerHTML = tag.label;
+        newTag.className = tags.id;
+        return newTag
+    }
+</script>
 
 </html>
