@@ -25,7 +25,8 @@ class TagService(metaclass=Singleton):
             result = [Tag(*row).__dict__ for row in cursor.fetchall()]
             cursor.close()
             self.pool.putconn(conn)
-            return result
+            dict_json = {'tags' : result}
+            return dict_json
         except:
             return "oops"
 

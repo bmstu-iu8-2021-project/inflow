@@ -3,10 +3,11 @@
 from re import A
 import threading
 import os
-from flask_login import login_manager
 from flask_jwt_extended import JWTManager, jwt_required, get_jwt_identity
 
 from flask import Flask, render_template
+from flask import jsonify
+from flask_cors import CORS
 from config import Config
 
 
@@ -80,6 +81,8 @@ SERVER_CONFIG = {
 
 if __name__ == "__main__":
     app = Flask(__name__)
+
+    CORS(app, resources={r"/*": {"origins": "*"}}, send_wildcard=True)
 
     app.config.from_object(Config)
 
