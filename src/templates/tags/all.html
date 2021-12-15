@@ -15,7 +15,7 @@
             <!-- <p><input type="search" name="q" placeholder="Поиск по тегам">
                 <input type="submit" value="Найти"></p> -->
             <!-- <p><input type="submit" value="все теги" id="btn"></p> -->
-            <p><button onclick="add" type="button" id="btn">Все теги</button></p>
+            <p><button onclick="addTags" type="button" id="btn">Все теги</button></p>
             <hr>
             <div class="all_tags">
             </div>
@@ -24,42 +24,64 @@
 </body>
 
 <script>
-    function scanTag(tags) {
-        for (var i = 0; i < tags.length; i++) {
-            addTag(tags[i]);
+    // function scanTag(tags) {
+
+    //     for (var i = 0; i < tags.length; i++) {
+    //         addTag(tags[i]);
+    //     }
+    // }
+
+    // function addTag(tag) {
+    //     // let tags = document.querySelector('all_tags')
+    //     var newTag = document.createElement("a");
+    //     newTag.setAttribute('class', "tags");
+    //     newTag.innerHTML = tag.label;
+    //     newTag.className = tag.id;
+    //     newTag.appendChild
+    //     return newTag
+    // }
+
+    // function addTag(json) {
+    //     var data = JSON.parse(json)
+    //     var list = ''
+    //     for (var i in data.tags) {
+    //         list += "<a id =" + String(data.tags[i].id) + "class = 'tags'>" + data.tags[i].label + "</a>"
+    //     }
+    //     return list
+    // }
+
+    document.getElementById("btn").addEventListener('click', addTags);
+
+    // function add() {
+    //     const api_url = "http://127.0.0.1:3000/tags/all";
+    //     var xhttp = new XMLHttpRequest();
+    //     xhttp.open("GET", api_url, true);
+    //     xhttp.send();
+    //     xhttp.onreadystatechange = function() {
+    //         if (this.readyState == 4 && this.status == 200) {
+    //             text = addTag(this.responseText);
+    //             document.getElementsByClassName('all_tags').innerHTML += text;
+    //         }
+    //     };
+
+    // response = jsonify(all_dict)
+    // response.headers.add('Access-Control-Allow-Origin', '*')
+    // return response
+    // }
+    async function addTags() {
+        let response = await fetch('http://127.0.0.1:3000/tags/all')
+        let content = await response.json()
+        let key
+        let list = document.querySelector('.all_tags')
+        let all_list = ''
+        for (key in content) {
+            all_list += `
+                <a class = "tags" id = "${content[key].id}" > #${content[key].label} </a>
+            `
         }
+        list.innerHTML = all_list
+        all_list = ''
     }
-
-    function addTag(tag) {
-        // let tags = document.querySelector('all_tags')
-        var newTag = document.createElement("a");
-        newTag.setAttribute('class', "tags");
-        newTag.innerHTML = tag.label;
-        newTag.className = tag.id;
-        return newTag
-    }
-
-    document.getElementById("btn").addEventListener('click', add);
-
-    function add() {
-        const api_url = "http://127.0.0.1:3000/tags/all";
-        var xhttp = new XMLHttpRequest();
-        xhttp.onreadystatechange = function() {
-            if (this.readyState == 4 && this.status == 200) {
-                text = scanTag(this.responseText);
-                document.getElementsByClassName('all_tags').text;
-            }
-        };
-        xhttp.open("GET", api_url, true);
-        xhttp.send();
-        // response = jsonify(all_dict)
-        // response.headers.add('Access-Control-Allow-Origin', '*')
-        // return response
-    }
-
-
-
-    // ajax('server.py', 'GET', scanTag, )
 </script>
 
 </html>
