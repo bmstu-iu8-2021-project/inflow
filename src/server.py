@@ -48,8 +48,8 @@ def init_server(app, config):
 
     app.add_url_rule('/', view_func=index, methods=["GET"])
     # app.add_url_rule('/auth', view_func=auth, methods=["GET"])
-    app.add_url_rule('/authenticate', view_func=auth_controller.authenticate, methods=["POST"])
-    app.add_url_rule('/register', view_func=auth_controller.create, methods=["POST"])
+    app.add_url_rule('/authenticate', '/authenticate', view_func=auth_controller.authenticate, methods=["POST"])
+    app.add_url_rule('/register', '/register', view_func=auth_controller.create, methods=["POST"])
 
     app.add_url_rule('/tags/all', '/tags/all', view_func=tag_controller.all, methods=['GET'])
     app.add_url_rule('/tags/create', '/tags/create', view_func=tag_controller.create, methods=['POST'])
