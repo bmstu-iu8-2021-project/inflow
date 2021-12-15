@@ -76,7 +76,7 @@
         let all_list = ''
         for (key in content) {
             all_list += `
-                <a class = "tags" id = "${content[key].id}" > #${content[key].label} </a>
+                <a class = "tags" id = "${content[key].id}" style="background-color:${content[key].color}"> #${content[key].label} </a>
             `
         }
         list.innerHTML = all_list
