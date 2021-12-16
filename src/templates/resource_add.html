@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="resource_add.css">
+</head>
+
+<body>
+    <div class="tabl1">
+        <form method="post">
+            <p><input id="title" type="text" name="title" placeholder="Заголовок">
+                <input id="link" type="text" name="link" placeholder="Ссылка">
+                <button onclick="add_resources" type="button" id="btn">Добавить</button></p>
+            <hr>
+            <div class="all_resources">
+                <!-- <p><a class="resources" id="1" href="https://habr.com/ru/post/317728/#ssylki">Кнопка или ссылка?</a></p> -->
+            </div>
+        </form>
+    </div>
+</body>
+<script>
+    document.getElementById("btn").addEventListener('click', add_resources);
+
+    async function add_resources() {
+        let input1 = document.querySelector('title');
+        let input2 = document.querySelector('link')
+        let data = {
+            "title": input1,
+            "link": input2
+        }
+        let response = await fetch('http://127.0.0.1:3000/resources/create', {
+            method: 'POST'
+        }, data)
+        let content = await response.json()
+            // let key
+            // let list = document.querySelector('resources')
+            // let all_list = ''
+            // for (key in content) {
+            //     all_list += `
+            //         <p><a class = "resources" id = "${content[key].id}" href="${content[key].link}">${content[key].title}</a></p>
+            //     `
+            // }
+            // list.innerHTML = all_list
+            // all_list = ''
+    }
+</script>
+
+</html>

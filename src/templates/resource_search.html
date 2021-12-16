@@ -5,14 +5,14 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="resource_search.css">
     <title>Document</title>
-    <link rel="stylesheet" href="all.css">
 </head>
 
 <body>
     <div class="tabl1">
-        <form method="get">
-            <p><input type="search" name="title" placeholder="Поиск статей">
+        <form name="search" method="get, post">
+            <p><input id="search" type="search" name="title" placeholder="Поиск статей">
                 <button onclick="search_resources" type="button" id="btn">Найти</button></p>
             <hr>
             <div class="all_resources">
@@ -22,10 +22,17 @@
     </div>
 </body>
 <script>
-    document.getElementById(" btn ").addEventListener('click', search_resources);
+    document.getElementById("btn").addEventListener('click', search_resources);
 
     async function search_resources() {
-        let response = await fetch('http://127.0.0.1:3000/resources/search_by_title')
+        let input = document.search.title.value
+        let data = {
+            "title": String(input)
+        }
+        let response = await fetch('http://127.0.0.1:3000/resources/search_by_title', {
+            method: 'GET',
+            method: 'POST'
+        }, data)
         let content = await response.json()
         let key
         let list = document.querySelector('resources')

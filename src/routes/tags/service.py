@@ -38,11 +38,12 @@ class TagService(metaclass=Singleton):
             
             conn.commit()
             
-            tag = Tag(id, label, color)
+            Tag(id, label, color)
             cursor.close()
             self.pool.putconn(conn)
-            return [Tag(*row).__dict__ for row in cursor.fetchall()]
+            # return [Tag(*row).__dict__ for row in cursor.fetchall()]
             # return tag.__dict__
+            return id
         except:
             return "oops"
         

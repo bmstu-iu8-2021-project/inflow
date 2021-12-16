@@ -72,12 +72,14 @@ class ResourceService(metaclass=Singleton):
         try:
             conn = self.pool.getconn()
             cursor = conn.cursor()
-            cursor.execute("INSERT INTO resources(title, link) VALUES (%s, %s);", (title, link))
-            result = [Resource(*row).__dict__ for row in cursor.fetchall()]
+            cursor.execute("INSERT INTO resources (title, link) VALUES (%s, %s) RETURNING id;", (title, link))
+            id = cursor.fetchone()[0]
+            # result = [Resource(*row).__dict__ for row in cursor.fetchall()]
             conn.commit()
+            Resource(id, title, link)
             cursor.close()
             self.pool.putconn(conn)
-            return result
+            return id
         except:
             return "oops"
 

@@ -3,7 +3,7 @@ CREATE TABLE IF NOT EXISTS tags
 (
     id      SERIAL PRIMARY KEY,
     label   VARCHAR(96),
-    color   VARCHAR(6)
+    color   VARCHAR(7)
 );
 
 CREATE TABLE IF NOT EXISTS resources
