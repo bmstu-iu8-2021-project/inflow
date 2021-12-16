@@ -68,7 +68,8 @@ class TagService(metaclass=Singleton):
         try:
             conn = self.pool.getconn()
             cursor = conn.cursor()
-            cursor.execute("SELECT id, label, color FROM tags WHERE label LIKE '%(%s)%';",(label))
+            tmp = "%{}%".format(label)
+            cursor.execute("SELECT id, label, color FROM tags WHERE label LIKE %s;",(tmp))
             result = [Tag(*row).__dict__ for row in cursor.fetchall()]
             conn.commit()
             cursor.close()

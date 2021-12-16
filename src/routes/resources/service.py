@@ -44,17 +44,16 @@ class ResourceService(metaclass=Singleton):
             return "oops"
 
     def search_by_title(self, title):
-        try:
-            conn = self.pool.getconn()
-            cursor = conn.cursor()
-
-            cursor.execute("SELECT id, title, link FROM resources WHERE title LIKE '%(%s)%';",(title))
-            result = [Resource(*row).__dict__ for row in cursor.fetchall()]
-            cursor.close()
-            self.pool.putconn(conn)
-            return result
-        except:
-            return "oops"
+        conn = self.pool.getconn()
+        cursor = conn.cursor()
+        tmp = "%{}%".format(title)
+        cursor.execute("SELECT id, title, link FROM resources WHERE title LIKE %s;",(tmp,))
+        result = [Resource(*row).__dict__ for row in cursor.fetchall()]
+        cursor.close()
+        self.pool.putconn(conn)
+        return result
+        # except:
+        #     return "oops"
 
     def delete(self, id):
         try:
