@@ -29,17 +29,19 @@
         let data = {
             "title": String(input)
         }
+        console.log("data: ", data)
         let response = await fetch('http://127.0.0.1:3000/resources/search_by_title', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
                 'Accept': 'application/json'
             },
-            body: new FormData(document.getElementById('form'))
+            body: JSON.stringify(data)
         });
         let content = await response.json()
         let key
-        let list = document.querySelector('resources')
+        let list = document.getElementsByClassName('all_resources')[0]
+        console.log(list)
         let all_list = ''
         for (key in content) {
             all_list += `
