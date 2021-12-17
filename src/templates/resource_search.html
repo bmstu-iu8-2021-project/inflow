@@ -11,8 +11,8 @@
 
 <body>
     <div class="tabl1">
-        <form name="search" method="get, post">
-            <p><input id="search" type="search" name="title" placeholder="Поиск статей">
+        <form id="form" name="search" method="post">
+            <p><input id="title" type="search" name="title" placeholder="Поиск статей">
                 <button onclick="search_resources" type="button" id="btn">Найти</button></p>
             <hr>
             <div class="all_resources">
@@ -30,9 +30,13 @@
             "title": String(input)
         }
         let response = await fetch('http://127.0.0.1:3000/resources/search_by_title', {
-            method: 'GET',
-            method: 'POST'
-        }, data)
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+            },
+            body: new FormData(document.getElementById('form'))
+        });
         let content = await response.json()
         let key
         let list = document.querySelector('resources')

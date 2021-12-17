@@ -1,5 +1,6 @@
 # from _typeshed import Self
 import sys
+from flask import json
 from flask.json import jsonify
 import psycopg2
 
@@ -52,8 +53,14 @@ class ResourceController(metaclass=Singleton):
         jsonbody: dict = request.get_json(force=True)
         if "title" in jsonbody:
             title: str = jsonbody.get("title")
-            result = self.resourses.search_by_title(title)
-            return jsonify(result)
+            result: Resource = self.resourses.search_by_title(title)
+            # last_result = json.dumps(result)
+            last_result = format(jsonify(result).get_json(force=True))
+            last_result = jsonify(result)
+            # return format(result.get_json(force=True))
+            # return format(jsonify(result).get_json(force=True))
+            
+            return last_result
         else:
             return {"error": "incorrect data entered"}
 
