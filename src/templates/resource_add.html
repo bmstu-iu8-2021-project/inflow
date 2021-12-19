@@ -10,14 +10,58 @@
 </head>
 
 <body>
-    <div class="tabl1">
-        <form method="post">
-            <p><input id="title" type="text" name="title" placeholder="Заголовок">
-                <input id="link" type="text" name="link" placeholder="Ссылка">
+    <div class="tabl">
+        <form method="post" name="add">
+            <p><a>Добавить источник</a></p>
+            <p><input class="title " id="title" type="text" name="title" placeholder="Заголовок">
+                <input class="link" id="link" type="text" name="link" placeholder="Ссылка">
                 <button onclick="add_resources" type="button" id="btn">Добавить</button></p>
             <hr>
             <div class="all_resources">
                 <!-- <p><a class="resources" id="1" href="https://habr.com/ru/post/317728/#ssylki">Кнопка или ссылка?</a></p> -->
+            </div>
+        </form>
+        <form method="post" name="search">
+            <p><a>Редактировать источник</a></p>
+            <p>
+                <input id="title2" type="text" name="title2" placeholder="Заголовок">
+                <button onclick="search_resources" type="button" id="btn2">Поиск</button>
+            </p>
+            <div class="tabl1">
+                <div class="card">
+                    <span><p><a>Название статьи aaaaaaaaaaaaaaaa aaaaaaaaaaaa aaaaaaaaaaaaa</a></p>
+                    <p><input type="submit" class="button" value="more"></p>
+                </span>
+
+                    <div class="all_tags">
+                        <a class="tags" style="background-color:#ffff00">#Россия</a>
+                        <a class="tags">#Армения</a>
+                        <a class="tags">#Польша</a>
+                        <a class="tags">#Россия</a>
+                    </div>
+                </div>
+                <div class="card">
+                    <p><a>Название статьи</a>
+                        <input type="submit" class="button" value="more"></p>
+
+                    <div class="all_tags">
+                        <a class="tags" style="background-color:#ffff00">#Россия</a>
+                        <a class="tags">#Армения</a>
+                        <a class="tags">#Польша</a>
+                        <a class="tags">#Россия</a>
+                    </div>
+                </div>
+                <div class="card">
+                    <p><a>Название статьи</a>
+                        <input type="submit" class="button" value="more"></p>
+
+                    <div class="all_tags">
+                        <a class="tags" style="background-color:#ffff00">#Россия</a>
+                        <a class="tags">#Армения</a>
+                        <a class="tags">#Польша</a>
+                        <a class="tags">#Россия</a>
+                    </div>
+                </div>
             </div>
         </form>
     </div>
@@ -26,26 +70,83 @@
     document.getElementById("btn").addEventListener('click', add_resources);
 
     async function add_resources() {
-        let input1 = document.querySelector('title');
-        let input2 = document.querySelector('link')
+        let input1 = document.add.title.value
+        let input2 = document.add.link.value
         let data = {
-            "title": input1,
-            "link": input2
+            "title": String(input1),
+            "link": String(input2)
         }
         let response = await fetch('http://127.0.0.1:3000/resources/create', {
-            method: 'POST'
-        }, data)
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+            },
+            body: JSON.stringify(data)
+        })
         let content = await response.json()
-            // let key
-            // let list = document.querySelector('resources')
-            // let all_list = ''
-            // for (key in content) {
-            //     all_list += `
-            //         <p><a class = "resources" id = "${content[key].id}" href="${content[key].link}">${content[key].title}</a></p>
-            //     `
-            // }
-            // list.innerHTML = all_list
-            // all_list = ''
+    }
+
+    document.getElementById("btn2").addEventListener('click', search_resources);
+
+    async function search_resources() {
+        let input = document.search.title2.value
+        let data1 = {
+            "title": String(input)
+        }
+        let response1 = await fetch('http://127.0.0.1:3000/resources/search_by_title', {
+            method: 'POST',
+            mode: 'no-cors',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+                "Access-Control-Allow-Origin": "*",
+                "Access-Control-Allow-Credentials": true
+            },
+            body: JSON.stringify(data1)
+        });
+        let content1 = await response1.json()
+        let key1
+        let list = document.getElementsByClassName('tabl1')[0]
+        console.log(list)
+        let all_list = ''
+        for (key1 in content1) {
+            input2 = content1[key1].id
+            data2 = {
+                "id": String(input2)
+            }
+            let response2 = await fetch('http://127.0.0.1:3000/tags/tags_in_resource', {
+                method: 'POST',
+                mode: 'no-cors',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json',
+                    "Access-Control-Allow-Origin": "*",
+                    "Access-Control-Allow-Credentials": true
+                },
+                body: JSON.stringify(data2)
+            });
+            let content2 = await response2.json()
+            let key2
+
+            all_list += `
+                <div class="card">
+                    <p><a id = "${content1[key1].id}" href="${content1[key1].link}">${content1[key1].title}</a>
+                        <input type="submit" class="button" value="more"></p>
+                `
+            for (key2 in content2) {
+                all_list += `
+                    <div class="all_tags">
+                        <a class="tags" id="${content2[key2].id}" style="background-color:${content[key2].color}">#${content2[key2].label}</a>
+                    </div>
+                `
+            }
+            all_list += `
+                </div>
+            `
+        }
+        list.innerHTML = all_list
+        all_list = ''
     }
 </script>
 

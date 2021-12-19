@@ -20,7 +20,7 @@ CREATE TABLE IF NOT EXISTS users
     password    TEXT
 );
 
-CREATE TABLE IF NOT EXISTS tags_recources
+CREATE TABLE IF NOT EXISTS tags_resources
 (
     tag_id INTEGER,
     resource_id INTEGER,

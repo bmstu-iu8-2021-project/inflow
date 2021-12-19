@@ -78,6 +78,16 @@ class TagService(metaclass=Singleton):
         except:
             return "oops"
 
+    def tags_in_resource(self, id):
+        conn = self.pool.getconn()
+        cursor = conn.cursor()
+        cursor.execute("SELECT tags.id, tags.label, tags.color FROM tags INNER JOIN tags_resources ON tags.id=tags_resources.tag_id WHERE tags_resources.resource_id=%s;",(id))
+        result = [Tag(*row).__dict__ for row in cursor.fetchall()]
+        conn.commit()
+        cursor.close()
+        self.pool.putconn(conn)
+        return result
+
     def join(self, id_src, id_dst):
         try:
             conn = self.pool.getconn()

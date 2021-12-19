@@ -28,9 +28,12 @@ class ResourceController(metaclass=Singleton):
         if "title" and "link" in jsonbody:
             title: str = jsonbody.get("title")
             link: str = jsonbody.get("link")
-
-            # TODO: handle service's exceptions
             resource: Resource = self.resourses.create(title, link)
+        # if "tags" in jsonbody:
+        #     tags: str = jsonbody.get("tags")
+
+        #     # TODO: handle service's exceptions
+            
 
             return jsonify(resource)
         else:
@@ -64,6 +67,27 @@ class ResourceController(metaclass=Singleton):
         else:
             return {"error": "incorrect data entered"}
 
+    def search(self):
+        jsonbody: dict = request.get_json(force=True)
+        if "title" and "tags" in jsonbody:
+            title: str = jsonbody.get("title")
+            tags: str = jsonbody.get("tags")
+            result: Resource = self.resourses.search(title, tags)
+            return result
+
+        elif "title" in jsonbody:
+            title: str = jsonbody.get("title")
+            result_resourses: Resource = self.resourses.search_by_title(title)
+            return jsonify(result_resourses)
+        elif "tags" in jsonbody:
+            tags: str = jsonbody.get("tags")
+            result_tags = self.resourses.search_by_tag(tags)
+            return jsonify(result_tags)
+        return 
+        
+
+
+
     def delete(self):
         jsonbody: dict = request.get_json(force=True)
         if "id" in jsonbody:
@@ -76,15 +100,14 @@ class ResourceController(metaclass=Singleton):
         jsonbody: dict = request.get_json(force=True)
         # resource_id = ""
         # tag_id = ""
-        if "tags" in jsonbody:
-            for value in jsonbody:
-                if value == Resource:
-                    resource_id = value.get("id")
-                if value == Resource:
-                    tag_id = value.get("id")
+        if "id" and "tags" in jsonbody:
+            resource_id: str = jsonbody.get("id")
+            tag_id: str = jsonbody.get("tags")
             self.resourses.update_add_tags(tag_id, resource_id)
+            return {"status": "ok"}
         else:
             return {"error": "incorrect data entered"}
+        
 
     def update_delete_tags(self):
         jsonbody: dict = request.get_json(force=True)

@@ -1,6 +1,7 @@
 import psycopg2
 
 import sys
+from models import resource
 sys.path.append('..')
 
 from models.resource import Resource
@@ -54,6 +55,18 @@ class ResourceService(metaclass=Singleton):
         return result
         # except:
         #     return "oops"
+
+
+
+    def search(self, title, tags):
+        conn = self.pool.getconn()
+        cursor = conn.cursor()
+        tmp = "%{}%".format(title)
+        cursor.execute("SELECT resources.id, resources.title, resources.link FROM resources JOIN tags_resources WHERE tags_resources.tag_id IN %s AND resources.title LIKE %s;",(tags, tmp))
+        result = [Resource(*row).__dict__ for row in cursor.fetchall()]
+        cursor.close()
+        self.pool.putconn(conn)
+        return result
 
     def delete(self, id):
         try:

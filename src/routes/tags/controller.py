@@ -32,6 +32,15 @@ class TagController(metaclass=Singleton):
         else:
             return {"error": "incorrect data entered"}
 
+    def tags_in_resource(self):
+        jsonbody: dict = request.get_json(force=True)
+        if "id" in jsonbody:
+            id: str = jsonbody.get("id")
+            tag: Tag = self.tags.tags_in_resource(id)
+            return jsonify(tag)
+        else:
+            return {"error": "incorrect data entered"}
+
     def delete(self):
         jsonbody: dict = request.get_json(force=True)
         if "id" in jsonbody:
