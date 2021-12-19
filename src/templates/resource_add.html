@@ -96,7 +96,7 @@
         }
         let response1 = await fetch('http://127.0.0.1:3000/resources/search_by_title', {
             method: 'POST',
-            mode: 'no-cors',
+            // mode: 'no-cors',
             headers: {
                 'Content-Type': 'application/json',
                 'Accept': 'application/json',
@@ -107,6 +107,7 @@
         });
         let content1 = await response1.json()
         let key1
+        console.log(content1)
         let list = document.getElementsByClassName('tabl1')[0]
         console.log(list)
         let all_list = ''
@@ -117,7 +118,7 @@
             }
             let response2 = await fetch('http://127.0.0.1:3000/tags/tags_in_resource', {
                 method: 'POST',
-                mode: 'no-cors',
+                // mode: 'no-cors',
                 headers: {
                     'Content-Type': 'application/json',
                     'Accept': 'application/json',
@@ -133,15 +134,15 @@
                 <div class="card">
                     <p><a id = "${content1[key1].id}" href="${content1[key1].link}">${content1[key1].title}</a>
                         <input type="submit" class="button" value="more"></p>
+                        <div class="all_tags">
                 `
             for (key2 in content2) {
                 all_list += `
-                    <div class="all_tags">
-                        <a class="tags" id="${content2[key2].id}" style="background-color:${content[key2].color}">#${content2[key2].label}</a>
-                    </div>
+                        <a class="tags" id="${content2[key2].id}" style="background-color:${content2[key2].color}">#${content2[key2].label}</a>
                 `
             }
             all_list += `
+                        </div>
                 </div>
             `
         }
