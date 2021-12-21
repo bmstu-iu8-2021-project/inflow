@@ -55,7 +55,7 @@ def init_server(app, config):
     app.add_url_rule('/tags/create', '/tags/create', view_func=tag_controller.create, methods=['POST'])
     app.add_url_rule('/tags/tags_in_resource', '/tags/tags_in_resource', view_func=tag_controller.tags_in_resource, methods=['POST'])
     app.add_url_rule('/tags/delete', '/tags/delete', view_func=tag_controller.delete, methods=['DELETE'])
-    app.add_url_rule('/tags/search', '/tags/search', view_func=tag_controller.search, methods=['GET'])
+    app.add_url_rule('/tags/search', '/tags/search', view_func=tag_controller.search, methods=['POST'])
     app.add_url_rule('/tags/join', '/tags/join', view_func=tag_controller.join, methods=['PUT'])
 
     app.add_url_rule('/resources/status', '/resources/status', resource_controller.status, methods=["GET"])

@@ -21,39 +21,17 @@
                 <!-- <p><a class="resources" id="1" href="https://habr.com/ru/post/317728/#ssylki">Кнопка или ссылка?</a></p> -->
             </div>
         </form>
-        <form method="post" name="search">
+        <form method="get" name="search">
             <p><a>Редактировать источник</a></p>
             <p>
-                <input id="title2" type="text" name="title2" placeholder="Заголовок">
+                <input id="title" type="text" name="title" placeholder="Заголовок">
                 <button onclick="search_resources" type="button" id="btn2">Поиск</button>
             </p>
             <div class="tabl1">
                 <div class="card">
                     <span><p><a>Название статьи aaaaaaaaaaaaaaaa aaaaaaaaaaaa aaaaaaaaaaaaa</a></p>
-                    <p><input type="submit" class="button" value="more"></p>
+                    <p><input type="submit" class="edit" value="Редактировать"></p>
                 </span>
-
-                    <div class="all_tags">
-                        <a class="tags" style="background-color:#ffff00">#Россия</a>
-                        <a class="tags">#Армения</a>
-                        <a class="tags">#Польша</a>
-                        <a class="tags">#Россия</a>
-                    </div>
-                </div>
-                <div class="card">
-                    <p><a>Название статьи</a>
-                        <input type="submit" class="button" value="more"></p>
-
-                    <div class="all_tags">
-                        <a class="tags" style="background-color:#ffff00">#Россия</a>
-                        <a class="tags">#Армения</a>
-                        <a class="tags">#Польша</a>
-                        <a class="tags">#Россия</a>
-                    </div>
-                </div>
-                <div class="card">
-                    <p><a>Название статьи</a>
-                        <input type="submit" class="button" value="more"></p>
 
                     <div class="all_tags">
                         <a class="tags" style="background-color:#ffff00">#Россия</a>
@@ -65,8 +43,62 @@
             </div>
         </form>
     </div>
+
+    <div class="hidden">
+        <p><a>Название статьи</a>
+            <hr>
+            <form>
+                <p><a>Добавить теги</a></p>
+                <p>
+                    <input id="tag" type="text" name="tag" placeholder="Тег">
+                    <button onclick="search_tag" type="button" id="search_tag">Поиск</button>
+                </p>
+            </form>
+            <hr>
+            <div class="your_tags"></div>
+            <hr>
+            <div class="new_tags"></div>
+            <button onclick="back" type="button" id="back">Назад</button>
+            <button onclick="save" type="button" id="save">Сохранить</button>
+    </div>
 </body>
 <script>
+    // function back() {
+
+    // }
+
+    // function save() {
+
+    // }
+
+    // function search_tag() {
+
+    // }
+
+    function redirectEdit(id) {
+        data = {
+            "id": String(id.id)
+        }
+        fetch('http://127.0.0.1:5500/src/templates/edit_resources.html', {
+            method: 'POST', // or 'PUT'
+            body: JSON.stringify(data),
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            redirect: 'follow'
+        })
+        window.location.href = 'http://127.0.0.1:5500/src/templates/edit_resources.html';
+    }
+    // document.querySelector('.edit').onclick = function() {
+    //         document.querySelector('.hidden').classList.add('form-on')
+    //     }
+    // document.getElementsByClassName("edit").addEventListener('click', edit);
+
+    // function edit() {
+    //     document.querySelector('edit').classList.add('form-on')
+    //         // document.getElementsByClassName("hidden").classlist.toggle('form-on')
+    // }
+
     document.getElementById("btn").addEventListener('click', add_resources);
 
     async function add_resources() {
@@ -90,13 +122,12 @@
     document.getElementById("btn2").addEventListener('click', search_resources);
 
     async function search_resources() {
-        let input = document.search.title2.value
+        let input = document.search.title.value
         let data1 = {
             "title": String(input)
         }
         let response1 = await fetch('http://127.0.0.1:3000/resources/search_by_title', {
             method: 'POST',
-            // mode: 'no-cors',
             headers: {
                 'Content-Type': 'application/json',
                 'Accept': 'application/json',
@@ -118,7 +149,6 @@
             }
             let response2 = await fetch('http://127.0.0.1:3000/tags/tags_in_resource', {
                 method: 'POST',
-                // mode: 'no-cors',
                 headers: {
                     'Content-Type': 'application/json',
                     'Accept': 'application/json',
@@ -133,7 +163,7 @@
             all_list += `
                 <div class="card">
                     <p><a id = "${content1[key1].id}" href="${content1[key1].link}">${content1[key1].title}</a>
-                        <input type="submit" class="button" value="more"></p>
+                        <input id = "${content1[key1].id}" type="submit" class="edit" value="more" onclick="redirectEdit(this)"></p>
                         <div class="all_tags">
                 `
             for (key2 in content2) {

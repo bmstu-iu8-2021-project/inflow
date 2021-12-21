@@ -65,18 +65,15 @@ class TagService(metaclass=Singleton):
             return "oops"
 
     def search(self, label):
-        try:
-            conn = self.pool.getconn()
-            cursor = conn.cursor()
-            tmp = "%{}%".format(label)
-            cursor.execute("SELECT id, label, color FROM tags WHERE label LIKE %s;",(tmp))
-            result = [Tag(*row).__dict__ for row in cursor.fetchall()]
-            conn.commit()
-            cursor.close()
-            self.pool.putconn(conn)
-            return result
-        except:
-            return "oops"
+        conn = self.pool.getconn()
+        cursor = conn.cursor()
+        tmp = "%{}%".format(label)
+        cursor.execute("SELECT id, label, color FROM tags WHERE label LIKE %s;",(tmp,))
+        result = [Tag(*row).__dict__ for row in cursor.fetchall()]
+        conn.commit()
+        cursor.close()
+        self.pool.putconn(conn)
+        return result
 
     def tags_in_resource(self, id):
         conn = self.pool.getconn()
